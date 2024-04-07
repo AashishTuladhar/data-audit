@@ -81,6 +81,6 @@ def setup():
     filename = (input("Enter validation file name: ")
                 or 'V_Products.txt')
     path = (input("Enter file path: ")
-            or r'D:\Canada\Academics\Term 2\Python Programming\Final Project\Validation Files')
+            or r'F:\Data audit Project\data-audit\Validation Files')
 
     return validator(path, filename)

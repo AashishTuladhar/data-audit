@@ -3,6 +3,7 @@ import configuration
 import validators
 import global_constants as constants
 import logging
+import database
 from time import perf_counter
 
 
@@ -12,7 +13,7 @@ def start():
     name = (input("Enter data file name: ")
             or 'Products.txt')
     path = (input("Enter file path: ")
-            or r'D:\Canada\Academics\Term 2\Python Programming\Final Project\Input Files')
+            or r'F:\Data audit Project\data-audit\Input Files')
 
     asyncio.run(main(path, name, app))
 
@@ -65,6 +66,10 @@ async def main(path, name, app):
 
         if input_data.lower() == 'y':
             print('Starting data import...')
+        
+            database.create_and_insert_data(r'F:\Data audit Project\data-audit\Validation Files\V_Products.txt', r'F:\Data audit Project\data-audit\Input Files\Products.txt')
+        
+            print('Data import completed.')
         else:
             print('Canceled data import')
 
