@@ -1,5 +1,5 @@
 import logging
-
+import pathlib
 import services
 
 
@@ -30,8 +30,10 @@ class Fields:
 
 
 class Validation:
-    def __init__(self, table_name, separator, date_format):
+    def __init__(self, validation_file_path, validation_file_name, table_name, separator, date_format):
         self.fields = Fields()
+        self.validation_file_path = validation_file_path
+        self.validation_file_name = validation_file_name
         self.table_name = table_name
         self.separator = separator
         self.date_format = date_format
@@ -43,7 +45,7 @@ def validator(validator_path, file_name):
     separator = configurations[1].split('=')[1].rstrip()
     date_format = configurations[2].split('=')[1].rstrip()
 
-    validation_obj = Validation(table_name, separator, date_format)
+    validation_obj = Validation(validator_path, file_name, table_name, separator, date_format)
 
     for field in filter(lambda x: str(x).startswith('Field') is True, configurations):
         field_items = field.split('=')
@@ -81,6 +83,6 @@ def setup():
     filename = (input("Enter validation file name: ")
                 or 'V_Products.txt')
     path = (input("Enter file path: ")
-            or r'F:\Data audit Project\data-audit\Validation Files')
+            or str(pathlib.Path().resolve()) + r'\Validation Files')
 
     return validator(path, filename)

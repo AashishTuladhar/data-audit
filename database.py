@@ -1,5 +1,5 @@
 import sqlite3
-import services 
+
 
 def create_table(conn, table_name, fields):
     cursor = conn.cursor()
@@ -14,7 +14,6 @@ def create_table(conn, table_name, fields):
     conn.commit()
 
 
-
 def insert_data(conn, table_name, data):
     cursor = conn.cursor()
 
@@ -24,14 +23,13 @@ def insert_data(conn, table_name, data):
 
     # Commit changes and close connection
     conn.commit()
-    
 
 
-def create_and_insert_data(validaion_file,product_file):
-    # Read table name and field names/types from the file from validaion_file
+def create_and_insert_data(validation_file, product_file):
+    # Read table name and field names/types from the file from validation_file
     table_name = None
     fields = []
-    with open(validaion_file, 'r') as file:
+    with open(validation_file, 'r') as file:
         for line in file:
             line = line.strip()
             if line.startswith("[") and line.endswith("]"):
@@ -40,7 +38,7 @@ def create_and_insert_data(validaion_file,product_file):
                 field_name, field_type = line.split('=')[1].split(',')
                 fields.append(f"{field_name.strip()} {field_type.strip()}")
 
-    #Read data from product file to insert in db
+    # Read data from product file to insert in db
     data = []
     with open(product_file, 'r') as file:
         for line in file:
@@ -50,11 +48,11 @@ def create_and_insert_data(validaion_file,product_file):
 
     # Connect to the database 
     conn = sqlite3.connect('database.db')
-    #create table
+    # create table
     create_table(conn, table_name, fields)
 
     # Insert data
     insert_data(conn, table_name, data)
 
-    #close the connection
+    # close the connection
     conn.close()

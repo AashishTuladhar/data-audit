@@ -4,6 +4,7 @@ import validators
 import global_constants as constants
 import logging
 import database
+import pathlib
 from time import perf_counter
 
 
@@ -13,7 +14,7 @@ def start():
     name = (input("Enter data file name: ")
             or 'Products.txt')
     path = (input("Enter file path: ")
-            or r'F:\Data audit Project\data-audit\Input Files')
+            or str(pathlib.Path().resolve()) + r"\Input Files")
 
     asyncio.run(main(path, name, app))
 
@@ -67,7 +68,8 @@ async def main(path, name, app):
         if input_data.lower() == 'y':
             print('Starting data import...')
         
-            database.create_and_insert_data(r'F:\Data audit Project\data-audit\Validation Files\V_Products.txt', r'F:\Data audit Project\data-audit\Input Files\Products.txt')
+            database.create_and_insert_data(f'{app.validation_file_path}\\{app.validation_file_name}',
+                                            f'{path}\\{name}')
         
             print('Data import completed.')
         else:
