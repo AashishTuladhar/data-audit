@@ -1,0 +1,4 @@
+1,'Biraj','Raya','Python'
+2,'Sudeep','Banjade','SQL'
+3,'Rupesh','Karki','JavaScript'
+4,'Aashish','Tuladhar',

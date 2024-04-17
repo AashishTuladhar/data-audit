@@ -12,12 +12,12 @@ def start():
     """
     Start the application.
     """
-    # Setup the basic configuration for the app
+    # Set up the basic configuration for the app
     app = configuration.setup()
 
     # Get the input files
     name = (input("Enter data file name: ")  # Prompt user for data file name
-            or 'Products.txt')
+            or 'Students.txt')
     path = (input("Enter file path: ")  # Prompt user for file path
             or str(pathlib.Path().resolve()) + r"\Input Files")
 
@@ -42,7 +42,7 @@ async def main(path, name, app):
     print(f'\nAudit started for file {name} at {path}...\n')
 
     # Count the audit errors
-    audit_errors = 0
+    audit_errors = []
 
     # Perform all the required validations asynchronously
     results = await asyncio.gather(
@@ -61,32 +61,33 @@ async def main(path, name, app):
         # Check for each audit result and increment the error count
         if result['constraint'] == constants.Constraints.PRIMARY_KEY:
             for duplicate in result['duplicates']:
-                audit_errors += 1
-                logging.info(duplicate)
+                audit_errors.append(duplicate)
 
             for null in result['nulls']:
-                audit_errors += 1
-                logging.info(null)
+                audit_errors.append(null)
 
         # Check for each audit result and increment the error count
         elif result['constraint'] == constants.Constraints.NOT_NULL:
             for null in result['nulls']:
-                audit_errors += 1
-                logging.info(null)
+                audit_errors.append(null)
 
         # Check for each audit result and increment the error count
         elif result['constraint'] == constants.Constraints.TYPE_MISMATCH:
             for type_mismatch in result['type_mismatch']:
-                audit_errors += 1
-                logging.info(type_mismatch)
+                audit_errors.append(type_mismatch)
 
     # Stop timer
     end_time = perf_counter()
     print(f'\nAudit completed in {end_time - start_time:0.4f}s')
 
     # If no audit errors, give choice to enter into database
-    if audit_errors > 0:
-        print(f'\nFound {audit_errors} inconsistencies in the file. Please check the logs for more details.')
+    if len(audit_errors) > 0:
+        configuration.configure_logger() # configure the logger
+
+        for error in audit_errors:
+            logging.info(error)
+
+        print(f'\nFound {len(audit_errors)} inconsistencies in the file. Please check the logs for more details.')
     else:
         print('No data inconsistencies found.')
         input_data = input('\nDo you want to import this data? (Y/N) ')
@@ -95,10 +96,8 @@ async def main(path, name, app):
         if input_data.lower() == 'y':
             print('Starting data import...')
         
-            database.create_and_insert_data(f'{app.validation_file_path}\\{app.validation_file_name}',
+            database.create_and_insert_data(app,
                                             f'{path}\\{name}')
-        
-            print('Data import completed.')
         else:
             print('Canceled data import')
 

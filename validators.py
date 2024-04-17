@@ -1,7 +1,7 @@
-import asyncio 
-import collections 
-import services 
-import re 
+import asyncio
+import collections
+import services
+import re
 
 
 async def validate_primary_key(file_path, file_name, field, separator, constraint):
@@ -119,7 +119,7 @@ async def get_nulls(file_path, file_name, field, separator, constraint):
                   or x.split(separator)[field.field_index] == '', file)
 
     for row in rows:
-        result.append(f'Found null/empty value for {field.field_name} (Index: {field.field_index}): {row}')
+        result.append(f'Found null/empty value for {field.field_name} (Column: {field.field_index + 1}): {row}')
 
     return {'constraint': constraint, 'nulls': result}
 
@@ -144,16 +144,22 @@ async def check_data_types(file_path, file_name, field, separator, constraint):
 
     if field.field_type == "TEXT":
         rows = filter(lambda x:
-                      x.split(separator)[field.field_index].startswith("'") is False
-                      or x.split(separator)[field.field_index].endswith("'") is False, file)
+                      (x.split(separator)[field.field_index].startswith("'") is False
+                       or x.split(separator)[field.field_index].endswith("'") is False)
+                      and x.split(separator)[field.field_index] is not None
+                      and x.split(separator)[field.field_index] != '', file)
     elif field.field_type == "INTEGER":
         rows = filter(lambda x:
-                      x.split(separator)[field.field_index].isdigit() is False, file)
+                      x.split(separator)[field.field_index].isdigit() is False
+                      and x.split(separator)[field.field_index] is not None
+                      and x.split(separator)[field.field_index] != '', file)
     else:
         rows = filter(lambda x:
-                      re.match(r'^[-+]?\d*\.?\d+$', x.split(separator)[field.field_index]) is None, file)
+                      re.match(r'^[-+]?\d*\.?\d+$', x.split(separator)[field.field_index]) is None
+                      and x.split(separator)[field.field_index] is not None
+                      and x.split(separator)[field.field_index] != '', file)
 
     for row in rows:
-        result.append(f'Incorrect data type for {field.field_name} (Index: {field.field_index}): {row}')
+        result.append(f'Incorrect data type for {field.field_name} (Column: {field.field_index + 1}): {row}')
 
     return {'constraint': constraint, 'type_mismatch': result}

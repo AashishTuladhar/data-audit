@@ -1,0 +1,9 @@
+[STUDENTS]
+SEPARATOR=,
+Field1=STUDENT_ID,INTEGER
+Field2=FIRST_NAME,TEXT
+Field3=LAST_NAME,TEXT
+Field4=COURSE,TEXT
+/--PrimaryKeyField -keyprop STUDENT_ID
+/--NotNullField -keyprop FIRST_NAME
+/--NotNullField -keyprop LAST_NAME
