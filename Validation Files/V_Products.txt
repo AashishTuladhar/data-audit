@@ -4,6 +4,7 @@ DATEFORMAT=YYYYMMDD
 Field1=PRODUCT_ID,INTEGER
 Field2=NAME,TEXT
 Field3=PRICE,REAL
+Field3=DISCOUNTED_PRICE,REAL
 /--PrimaryKeyField -keyprop PRODUCT_ID
 /--NotNullField -keyprop NAME
 /--NotNullField -keyprop PRICE

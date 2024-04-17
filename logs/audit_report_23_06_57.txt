@@ -1,0 +1,3 @@
+INFO:root:Found null/empty value for PRICE (Index: 2): 5,'Digital Watch',
+INFO:root:Incorrect data type for PRICE (Index: 2): 5,'Digital Watch',
+INFO:root:Incorrect data type for DISCOUNTED_PRICE (Index: 2): 5,'Digital Watch',

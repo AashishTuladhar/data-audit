@@ -1,56 +1,60 @@
-import logging
-import pathlib
-import services
-from datetime import datetime
+import logging 
+import pathlib 
+import services  
+from datetime import datetime  
 
-# class for the field description 
+# Class for representing a field description
 class Field:
     def __init__(self, field_name, field_index, field_type):
-        self.field_name = field_name
-        self.field_index = field_index
-        self.field_type = field_type
+        self.field_name = field_name  # Name of the field
+        self.field_index = field_index  # Index of the field
+        self.field_type = field_type  # Type of the field
 
-# collection of field class divided into respective domains
+# Collection of Field objects divided into respective domains
 class Fields:
     def __init__(self):
-        self.primary_key_field = None
-        self.not_null_fields = []
-        self.all = []
+        self.primary_key_field = None  # Primary key field
+        self.not_null_fields = []  # List of fields that cannot be null
+        self.all = []  # List of all fields
 
+    # Set the primary key field
     def set_primary_key_field(self, field_name, field_index, field_type):
         self.primary_key_field = Field(field_name, field_index, field_type)
 
+    # Add a not null field
     def add_not_null_field(self, field_name, field_index, field_type):
         self.not_null_fields.append(Field(field_name, field_index, field_type))
 
+    # Set a field
     def set_field(self, field_name, field_index, field_type):
         self.all.append(Field(field_name, field_index, field_type))
 
+    # Get all fields
     def get_all_fields(self):
         return self.all
 
-# basic settings object for the validation process
+# Basic settings object for the validation process
 class Validation:
     def __init__(self, validation_file_path, validation_file_name, table_name, separator, date_format):
-        self.fields = Fields()
-        self.validation_file_path = validation_file_path
-        self.validation_file_name = validation_file_name
-        self.table_name = table_name
-        self.separator = separator
-        self.date_format = date_format
+        self.fields = Fields()  # Fields object for storing field information
+        self.validation_file_path = validation_file_path  # Path to the validation file
+        self.validation_file_name = validation_file_name  # Name of the validation file
+        self.table_name = table_name  # Name of the table being validated
+        self.separator = separator  # Separator used in the validation file
+        self.date_format = date_format  # Date format used in the validation file
 
-# creates and returns the validator class
+# Creates and returns the validator class
 def validator(validator_path, file_name):
-    # read from the valdiation file to get all the validation properties
+    # Read from the validation file to get all the validation properties
     configurations = services.read_validation_file(validator_path, file_name)
-    table_name = configurations[0][1:-2].rstrip()
-    separator = configurations[1].split('=')[1].rstrip()
-    date_format = configurations[2].split('=')[1].rstrip()
+    table_name = configurations[0][1:-2].rstrip()  # Extract table name
+    separator = configurations[1].split('=')[1].rstrip()  # Extract separator
+    date_format = configurations[2].split('=')[1].rstrip()  # Extract date format
 
-    # create the validation object based on the properties
+    # Create the validation object based on the properties
     validation_obj = Validation(validator_path, file_name, table_name, separator, date_format)
 
-    # search for each record starting with 'Field' in the text file
+    # Search for each record starting with 'Field' in the text file
     for field in filter(lambda x: str(x).startswith('Field') is True, configurations):
         field_items = field.split('=')
 
@@ -60,6 +64,7 @@ def validator(validator_path, file_name):
 
         validation_obj.fields.set_field(name, index, data_type)
 
+    # Extract and assign primary key and not null fields
     for validation in filter(lambda x: str(x).startswith('/--') is True, configurations):
         validation_items = validation.split('-keyprop')
 
@@ -73,20 +78,19 @@ def validator(validator_path, file_name):
 
     return validation_obj
 
-
+# Configure the logger
 def configure_logger():
     logging.basicConfig(filename=str(pathlib.Path().resolve()) + r'\logs\audit_report_' + datetime.now().strftime('%H_%M_%S.txt'),
                         filemode='w',
-                        # format='%(pastime)s,%(secs)d %(name)s %(levelness)s %(message)s',
                         datefmt='%H:%M:%S',
                         level=logging.INFO)
 
-
+# Setup function for initializing the validation process
 def setup():
-    filename = (input("Enter validation file name: ")
+    filename = (input("Enter validation file name: ")  # Prompt user for validation file name
                 or 'V_Products.txt')
-    path = (input("Enter file path: ")
+    path = (input("Enter file path: ")  # Prompt user for file path
             or str(pathlib.Path().resolve()) + r'\Validation Files')
-    configure_logger()
+    configure_logger()  # Configure the logger
 
-    return validator(path, filename)
+    return validator(path, filename)  # Return the validator object

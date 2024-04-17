@@ -1,3 +1,0 @@
-INFO:root:Found 2 duplicates for PRODUCT_ID 8
-INFO:root:Found null/empty value for PRICE (Index: 2): 19,'Digital Watch',
-INFO:root:Incorrect data type for PRICE (Index: 2): 19,'Digital Watch',

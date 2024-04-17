@@ -1,1 +1,0 @@
-INFO:root:Incorrect data type for PRODUCT_ID (Index: 0): '7','Digital Watch',299.90

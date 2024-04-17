@@ -1,1 +1,0 @@
-INFO:root:Incorrect data type for NAME (Index: 1): 4,Digital Watch,299.90
