@@ -1,15 +1,16 @@
 import logging
 import pathlib
 import services
+from datetime import datetime
 
-
+# class for the field description 
 class Field:
     def __init__(self, field_name, field_index, field_type):
         self.field_name = field_name
         self.field_index = field_index
         self.field_type = field_type
 
-
+# collection of field class divided into respective domains
 class Fields:
     def __init__(self):
         self.primary_key_field = None
@@ -28,7 +29,7 @@ class Fields:
     def get_all_fields(self):
         return self.all
 
-
+# basic settings object for the validation process
 class Validation:
     def __init__(self, validation_file_path, validation_file_name, table_name, separator, date_format):
         self.fields = Fields()
@@ -38,15 +39,18 @@ class Validation:
         self.separator = separator
         self.date_format = date_format
 
-
+# creates and returns the validator class
 def validator(validator_path, file_name):
+    # read from the valdiation file to get all the validation properties
     configurations = services.read_validation_file(validator_path, file_name)
     table_name = configurations[0][1:-2].rstrip()
     separator = configurations[1].split('=')[1].rstrip()
     date_format = configurations[2].split('=')[1].rstrip()
 
+    # create the validation object based on the properties
     validation_obj = Validation(validator_path, file_name, table_name, separator, date_format)
 
+    # search for each record starting with 'Field' in the text file
     for field in filter(lambda x: str(x).startswith('Field') is True, configurations):
         field_items = field.split('=')
 
@@ -71,7 +75,7 @@ def validator(validator_path, file_name):
 
 
 def configure_logger():
-    logging.basicConfig(filename='test.txt',
+    logging.basicConfig(filename=str(pathlib.Path().resolve()) + r'\logs\audit_report_' + datetime.now().strftime('%H_%M_%S.txt'),
                         filemode='w',
                         # format='%(pastime)s,%(secs)d %(name)s %(levelness)s %(message)s',
                         datefmt='%H:%M:%S',
@@ -79,10 +83,10 @@ def configure_logger():
 
 
 def setup():
-    configure_logger()
     filename = (input("Enter validation file name: ")
                 or 'V_Products.txt')
     path = (input("Enter file path: ")
             or str(pathlib.Path().resolve()) + r'\Validation Files')
+    configure_logger()
 
     return validator(path, filename)

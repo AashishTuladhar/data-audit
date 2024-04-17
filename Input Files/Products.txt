@@ -16,5 +16,5 @@
 16,'Digital Watch',299.90
 17,'Digital Watch',299.90
 18,'Digital Watch',299.90
-19,'Digital Watch',299.90
+19,'Digital Watch',100.00
 20,'Digital Watch',399.90

@@ -2,7 +2,6 @@ import asyncio
 import collections
 import services
 import re
-import logging
 
 
 async def validate_primary_key(file_path, file_name, field, separator, constraint):
